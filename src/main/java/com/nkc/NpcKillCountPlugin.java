@@ -5,6 +5,7 @@ import com.google.gson.reflect.TypeToken;
 import com.google.inject.Provides;
 import java.awt.image.BufferedImage;
 import java.lang.reflect.Type;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
@@ -19,18 +20,19 @@ import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.ClientToolbar;
 import net.runelite.client.ui.NavigationButton;
+import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.util.ImageUtil;
 
 /**
- * Houdt per NPC-type bij hoeveel kills de lokale speler heeft gemaakt.
- * Telt via NpcLootReceived: dit event vuurt zodra de speler credit krijgt
- * voor het doden van een NPC (ook bij een lege loot-drop), en voorkomt
- * dubbeltellingen door kills van andere spelers.
+ * Tracks how many of each NPC type the local player has killed.
+ * Kills are counted via NpcLootReceived: this event fires whenever the player
+ * is credited with a kill (even on an empty drop), which avoids counting
+ * kills made by other players.
  */
 @Slf4j
 @PluginDescriptor(
 	name = "NPC Kill Counter",
-	description = "Houdt kills per NPC-type bij, met resetopties per soort of voor alles",
+	description = "Tracks kills per NPC type, with options to reset a single NPC or all of them",
 	tags = {"npc", "kill", "counter", "tracker", "pvm"}
 )
 public class NpcKillCountPlugin extends Plugin
@@ -43,6 +45,12 @@ public class NpcKillCountPlugin extends Plugin
 
 	@Inject
 	private ClientToolbar clientToolbar;
+
+	@Inject
+	private OverlayManager overlayManager;
+
+	@Inject
+	private NpcKillCountOverlay overlay;
 
 	@Inject
 	private Gson gson;
@@ -76,12 +84,14 @@ public class NpcKillCountPlugin extends Plugin
 			.build();
 
 		clientToolbar.addNavigation(navButton);
+		overlayManager.add(overlay);
 	}
 
 	@Override
 	protected void shutDown()
 	{
 		clientToolbar.removeNavigation(navButton);
+		overlayManager.remove(overlay);
 		panel = null;
 		navButton = null;
 	}
@@ -100,6 +110,11 @@ public class NpcKillCountPlugin extends Plugin
 		killCounts.merge(name, 1, Integer::sum);
 		saveCounts();
 		refreshPanel();
+	}
+
+	public Map<String, Integer> getKillCounts()
+	{
+		return Collections.unmodifiableMap(killCounts);
 	}
 
 	private void resetNpc(String name)
@@ -153,7 +168,7 @@ public class NpcKillCountPlugin extends Plugin
 		}
 		catch (Exception e)
 		{
-			log.warn("Kon opgeslagen kill counts niet lezen", e);
+			log.warn("Unable to read stored kill counts", e);
 		}
 	}
 

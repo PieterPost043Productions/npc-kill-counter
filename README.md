@@ -5,6 +5,7 @@ A RuneLite plugin that tracks how many of each NPC type you've killed. Simple ki
 ## Features
 
 - Counts kills per NPC type, tracked via `NpcLootReceived` (fires whenever you get credit for a kill, including empty drops), so kills from other players aren't counted.
+- On-screen overlay showing your kill counts while you play (can be toggled off in the plugin settings).
 - Sidebar panel listing every NPC you've killed and its kill count.
 - Reset button per NPC, plus a "Reset all" button to clear everything at once.
 - Kill counts persist across client restarts (stored via RuneLite's `ConfigManager`).
@@ -19,7 +20,7 @@ cd npc-kill-counter
 gradle build
 ```
 
-The built jar will be at `build/libs/npc-kill-counter-1.0.0.jar`.
+The built jar will be at `build/libs/npc-kill-counter-1.1.0.jar`.
 
 ## Installing locally (sideloading)
 
@@ -28,3 +29,7 @@ The official RuneLite launcher doesn't load arbitrary plugins from disk — deve
 ## License
 
 BSD 2-Clause, see [LICENSE](LICENSE).
+
+## Author
+
+PieterPost43

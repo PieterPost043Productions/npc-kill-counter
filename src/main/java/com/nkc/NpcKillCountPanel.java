@@ -42,7 +42,7 @@ public class NpcKillCountPanel extends PluginPanel
 		JLabel title = new JLabel("NPC Kill Counter");
 		title.setForeground(Color.WHITE);
 
-		JButton resetAllButton = new JButton("Reset alles");
+		JButton resetAllButton = new JButton("Reset all");
 		resetAllButton.addActionListener(e -> onResetAll.run());
 
 		header.add(title, BorderLayout.WEST);
@@ -72,7 +72,7 @@ public class NpcKillCountPanel extends PluginPanel
 
 		if (counts.isEmpty())
 		{
-			JLabel empty = new JLabel("Nog geen kills geregistreerd.");
+			JLabel empty = new JLabel("No kills recorded yet.");
 			empty.setForeground(Color.LIGHT_GRAY);
 			listPanel.add(empty, c);
 		}
@@ -104,7 +104,7 @@ public class NpcKillCountPanel extends PluginPanel
 		countLabel.setPreferredSize(new Dimension(36, 20));
 
 		JButton resetButton = new JButton("x");
-		resetButton.setToolTipText("Reset kills voor " + name);
+		resetButton.setToolTipText("Reset kills for " + name);
 		resetButton.setMargin(new Insets(0, 4, 0, 4));
 		resetButton.addActionListener(e -> onResetNpc.accept(name));
 
